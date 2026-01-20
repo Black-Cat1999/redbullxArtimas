@@ -1,7 +1,8 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useScroll, useTransform, motion, useMotionValueEvent } from "framer-motion";
 import Navbar from "@/components/Navbar";
+import { Volume2, VolumeX } from "lucide-react";
 
 export default function Home() {
   const targetRef = useRef<HTMLDivElement>(null);
@@ -14,13 +15,80 @@ export default function Home() {
 
   // Blur Challenge State
   const [isRevealed, setIsRevealed] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [selectedImage, setSelectedImage] = useState("/IMG_1.png");
+
+  // Music State
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const imageNames = ["/IMG_1.jpeg", "/IMG_2.jpeg", "/IMG_3.jpeg", "/IMG_4.jpeg", "/IMG_5.jpeg"];
+
+  // Initialize with random image & Audio
+  useEffect(() => {
+    const randomImage = imageNames[Math.floor(Math.random() * imageNames.length)];
+    setSelectedImage(randomImage);
+
+    // Initialize Audio
+    audioRef.current = new Audio("/Pirates of the Caribbean - Hes a Pirate.mp3");
+    if (audioRef.current) {
+      audioRef.current.loop = true; // Loop if timer exceeds music length
+      audioRef.current.volume = 0.5;
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    }
+  }, []);
+
+  // Handle Music Playback
+  useEffect(() => {
+    if (!audioRef.current) return;
+
+    if (isRevealed && !isMuted) {
+      audioRef.current.play().catch(e => console.log("Audio play failed:", e));
+    } else {
+      audioRef.current.pause();
+      if (!isRevealed) {
+        audioRef.current.currentTime = 0; // Reset when timer ends
+      }
+    }
+  }, [isRevealed, isMuted]);
+
+  // Timer countdown effect
+  useEffect(() => {
+    if (!isRevealed) return;
+
+    const initialTime = 60;
+    setTimeLeft(initialTime);
+
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isRevealed]);
 
   const handleReveal = () => {
     if (isRevealed) return; // Already revealed
     setIsRevealed(true);
     setTimeout(() => {
       setIsRevealed(false);
-    }, 3000); // 3 seconds timer
+      setTimeLeft(0);
+
+      // Change image randomly after timer ends
+      const randomImage = imageNames[Math.floor(Math.random() * imageNames.length)];
+      setSelectedImage(randomImage);
+    }, 60000); // 1 minute timer
   };
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
@@ -63,7 +131,7 @@ export default function Home() {
               {/* Left: Artimas Logo */}
               <div className="flex-1 flex justify-center items-center h-[40%] md:h-full pt-24 md:pt-0">
                 <a href="https://www.pccoeaimsa.in/" target="_blank" rel="noopener noreferrer" className="contents">
-                  <img src="/artimas.png" alt="Artimas" className="w-[60%] md:w-[80%] max-w-[300px] md:max-w-[400px] object-contain drop-shadow-2xl hover:scale-105 transition-transform cursor-pointer" />
+                  <img src="/artimas.png" alt="Artimas" className="w-auto h-auto mt-20 object-contain drop-shadow-2xl hover:scale-105 transition-transform cursor-pointer" />
                 </a>
               </div>
               {/* Right: AiMSA Info */}
@@ -88,12 +156,12 @@ export default function Home() {
           >
             <div className="container mx-auto h-full flex flex-col md:flex-row items-center px-6 md:px-16 gap-8 md:gap-12 text-white">
               {/* Left: Blurred Image */}
-              <div className="flex-1 flex justify-center items-center h-[40%] md:h-full pt-20 md:pt-0">
-                <div className="relative w-[70vw] md:w-full max-w-[250px] md:max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-white/20 bg-black/20">
+              <div className="flex-1 flex flex-col justify-center items-center h-[40%] md:h-full pt-20 md:pt-0 gap-6">
+                <div className="relative w-auto h-auto mt-24 aspect-auto rounded-3xl overflow-hidden shadow-2xl border-4 border-white/20 bg-black/20">
                   <img
-                    src="/blur-image.png"
+                    src={selectedImage}
                     alt="Hidden Challenge"
-                    className={`w-full h-full object-cover transition-all duration-700 ease-in-out ${isRevealed ? 'blur-0 scale-100' : 'blur-xl scale-110'}`}
+                    className={`max-w-[80vw] md:max-w-2xl max-h-[60vh] object-contain transition-all duration-700 ease-in-out ${isRevealed ? 'blur-0 scale-100' : 'blur-xl scale-110'}`}
                   />
                   {!isRevealed && (
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -101,6 +169,8 @@ export default function Home() {
                     </div>
                   )}
                 </div>
+
+                {/* Timer Display - Outside Image */}
               </div>
 
               {/* Right: Instructions & Timer */}
@@ -111,15 +181,30 @@ export default function Home() {
                   Challenge
                 </h1>
                 <p className="text-blue-100 text-sm md:text-lg mb-6 md:mb-8 max-w-md">
-                  Click the timer to reveal the hidden image. You have 3 seconds to memorize the details before it blurs again!
+                  Click the timer to reveal the hidden image. You have 1 minute to memorize every detail before it blurs again! A countdown timer will guide you.
                 </p>
                 <button
                   onClick={handleReveal}
                   className="group flex items-center gap-3 md:gap-4 px-6 md:px-8 py-3 md:py-4 bg-white text-[#0098db] font-bold rounded-full hover:bg-blue-50 transition-all transform hover:scale-105 shadow-xl text-sm md:text-lg"
                 >
                   <img src="/timer-icon.png" alt="Timer" className="w-6 h-6 md:w-8 md:h-8 object-contain group-hover:rotate-12 transition-transform" />
-                  <span>{isRevealed ? "Focus Now!" : "Start Timer"}</span>
+                  <span>
+                    {isRevealed
+                      ? `${timeLeft} seconds remaining`
+                      : "Start Focus Challenge!"}
+                  </span>
                 </button>
+
+                {/* Mute Toggle - Only Visible when Active or if user wants to toggle readiness */}
+                {isRevealed && (
+                  <button
+                    onClick={() => setIsMuted(prev => !prev)}
+                    className="mt-4 flex items-center gap-2 text-white/80 hover:text-white transition-colors text-sm font-semibold"
+                  >
+                    {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                    {isMuted ? "Unmute Music" : "Mute Music"}
+                  </button>
+                )}
               </div>
             </div>
           </motion.div>
