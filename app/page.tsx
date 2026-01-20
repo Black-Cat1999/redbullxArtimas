@@ -110,9 +110,42 @@ export default function Home() {
   const whiteX = useTransform(scrollYProgress, [0, 0.5], ["0%", "-100%"]);
   const blueX = useTransform(scrollYProgress, [0.5, 1], ["0%", "-100%"]);
 
+  const handleNavigate = (index: number) => {
+    // Determine target scroll position based on index
+    // 300vh total height.
+    // Index 0 (Red Bull) -> 0
+    // Index 1 (Image Challenge) -> 100vh (approx 1/2 of scrollable area, which is 200vh total scroll distance?)
+    // Actually, calculate based on window height.
+    const scrollHeight = document.body.scrollHeight - window.innerHeight; // Total scrollable distance
+    let target = 0;
+
+    if (index === 0) target = 0; // Top
+    if (index === 1) target = window.innerHeight * 1.5; // Enough to clear white (0.5 progress) -> 100vh of scroll?
+    // useScroll offset is 300vh - 100vh = 200vh scrollable
+    // 0.5 progress = 100vh
+    // so 100vh * 1.5 might be too far?
+    // Let's rely on the progress logic.
+    // 0.5 prog = blue visible
+
+    const viewportHeight = window.innerHeight;
+    // Total height = 300vh. Scrollable = 200vh.
+
+    if (index === 0) {
+      // 0 progress
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (index === 1) {
+      // Target 0.5 progress exactly where White is gone (-100%) and Blue is centered (0%)
+      // 0.5 * 200vh (scrollable) = 100vh scroll position.
+      window.scrollTo({ top: viewportHeight, behavior: 'smooth' });
+    } else if (index === 2) {
+      // Bottom
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+  };
+
   return (
     <main className="relative bg-black min-h-screen">
-      <Navbar activeIndex={activeIndex} />
+      <Navbar activeIndex={activeIndex} onNavigate={handleNavigate} />
 
       {/* Noise Overlay for texture/premium feel */}
       <div className="fixed inset-0 pointer-events-none z-[60] opacity-[0.03] mix-blend-overlay"
@@ -131,7 +164,7 @@ export default function Home() {
               {/* Left: Artimas Logo */}
               <div className="flex-1 flex justify-center items-center h-[40%] md:h-full pt-24 md:pt-0">
                 <a href="https://www.pccoeaimsa.in/" target="_blank" rel="noopener noreferrer" className="contents">
-                  <img src="/artimas.png" alt="Artimas" className="w-auto h-auto mt-20 object-contain drop-shadow-2xl hover:scale-105 transition-transform cursor-pointer" />
+                  <img src="/aimsa_logo_new.png" alt="AiMSA" className="w-[60%] md:w-[80%] max-w-[300px] md:max-w-[400px] object-contain drop-shadow-2xl hover:scale-105 transition-transform cursor-pointer" />
                 </a>
               </div>
               {/* Right: AiMSA Info */}

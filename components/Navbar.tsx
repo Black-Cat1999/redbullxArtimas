@@ -6,9 +6,10 @@ import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 
 interface NavbarProps {
     activeIndex?: number;
+    onNavigate?: (index: number) => void;
 }
 
-export default function Navbar({ activeIndex = 0 }: NavbarProps) {
+export default function Navbar({ activeIndex = 0, onNavigate }: NavbarProps) {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     const links = [
@@ -43,7 +44,14 @@ export default function Navbar({ activeIndex = 0 }: NavbarProps) {
                             className="relative group cursor-pointer"
                             onMouseEnter={() => setHoveredIndex(index)}
                         >
-                            <Link href="#" className={`flex items-center gap-1 font-sans text-sm font-bold uppercase tracking-wider transition-colors z-10 relative ${currentActive === index ? 'text-rb-red' : 'text-rb-dark-blue'}`}>
+                            <Link
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (onNavigate) onNavigate(index);
+                                }}
+                                className={`flex items-center gap-1 font-sans text-sm font-bold uppercase tracking-wider transition-colors z-10 relative ${currentActive === index ? 'text-rb-red' : 'text-rb-dark-blue'}`}
+                            >
                                 {link.name}
                                 {link.hasDropdown && <span className="text-xs">▼</span>}
                             </Link>
