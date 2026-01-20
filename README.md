@@ -25,21 +25,21 @@ The website serves as a **promotional and engagement-focused landing page** inte
 
 ## 📁 Project Structure
 
+```text
 app/
-├─ layout.tsx # Root layout using App Router
-├─ page.tsx # Main single-page implementation
+ ├─ layout.tsx        # Root layout using App Router
+ ├─ page.tsx          # Main single-page implementation
 
 components/
-├─ Navbar.tsx # Fixed pill-shaped navigation bar
-└─ Reusable UI components
+ ├─ Navbar.tsx        # Fixed pill-shaped navigation bar
+ └─ Reusable UI components
 
 public/
-├─ images/ # Product images, challenge images, logos
-├─ audio/ # Background MP3 files
-└─ Static assets
+ ├─ images/           # Product images, challenge images, logos
+ ├─ audio/            # Background MP3 files
+ └─ Static assets
+```
 
-
----
 
 ## ✨ Core Features
 
