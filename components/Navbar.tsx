@@ -22,7 +22,7 @@ export default function Navbar({ activeIndex = 0, onNavigate }: NavbarProps) {
 
     return (
         <motion.nav
-            className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-6 bg-transparent"
+            className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-8 py-6 bg-transparent"
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ duration: 0.5 }}

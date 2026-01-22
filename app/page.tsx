@@ -12,22 +12,22 @@ export default function Home() {
   });
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   // Blur Challenge State
   const [isRevealed, setIsRevealed] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
-  const [selectedImage, setSelectedImage] = useState("/IMG_1.png");
+  const [selectedImage, setSelectedImage] = useState("/16x9.jpg.jpeg");
 
   // Music State
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const imageNames = ["/IMG_1.jpeg", "/IMG_2.jpeg", "/IMG_3.jpeg", "/IMG_4.jpeg", "/IMG_5.jpeg"];
-
-  // Initialize with random image & Audio
   useEffect(() => {
-    const randomImage = imageNames[Math.floor(Math.random() * imageNames.length)];
-    setSelectedImage(randomImage);
 
     // Initialize Audio
     audioRef.current = new Audio("/Pirates of the Caribbean - Hes a Pirate.mp3");
@@ -62,7 +62,7 @@ export default function Home() {
   useEffect(() => {
     if (!isRevealed) return;
 
-    const initialTime = 60;
+    const initialTime = 20;
     setTimeLeft(initialTime);
 
     const interval = setInterval(() => {
@@ -84,11 +84,7 @@ export default function Home() {
     setTimeout(() => {
       setIsRevealed(false);
       setTimeLeft(0);
-
-      // Change image randomly after timer ends
-      const randomImage = imageNames[Math.floor(Math.random() * imageNames.length)];
-      setSelectedImage(randomImage);
-    }, 60000); // 1 minute timer
+    }, 20000); // 20 seconds timer
   };
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
@@ -145,7 +141,7 @@ export default function Home() {
 
   return (
     <main className="relative bg-black min-h-screen">
-      <Navbar activeIndex={activeIndex} onNavigate={handleNavigate} />
+      {hasMounted && <Navbar activeIndex={activeIndex} onNavigate={handleNavigate} />}
 
       {/* Noise Overlay for texture/premium feel */}
       <div className="fixed inset-0 pointer-events-none z-[60] opacity-[0.03] mix-blend-overlay"
@@ -214,7 +210,7 @@ export default function Home() {
                   Challenge
                 </h1>
                 <p className="text-blue-100 text-sm md:text-lg mb-6 md:mb-8 max-w-md">
-                  Click the timer to reveal the hidden image. You have 1 minute to memorize every detail before it blurs again! A countdown timer will guide you.
+                  Click the timer to reveal the hidden image. You have 20 seconds to memorize every detail before it blurs again! A countdown timer will guide you.
                 </p>
                 <button
                   onClick={handleReveal}
