@@ -22,18 +22,18 @@ export default function Navbar({ activeIndex = 0, onNavigate }: NavbarProps) {
 
     return (
         <motion.nav
-            className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-8 py-6 bg-transparent"
+            className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-8 py-6 bg-transparent pointer-events-none"
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ duration: 0.5 }}
         >
             {/* Left: Artimas Logo (Even Larger) */}
-            <div className="flex-1 flex justify-start">
+            <div className="flex-1 flex justify-start pointer-events-auto">
                 <img src="/artimas.png" alt="Artimas" className="h-28 w-auto object-contain drop-shadow-lg" />
             </div>
 
             {/* Center: Pill Container with Sliding Line */}
-            <div className="flex items-center">
+            <div className="flex items-center pointer-events-auto">
                 <div
                     className="relative flex items-center gap-8 bg-[#f1f5f9]/90 backdrop-blur-sm px-10 py-4 rounded-full shadow-lg border border-white/50"
                     onMouseLeave={() => setHoveredIndex(null)}
