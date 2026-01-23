@@ -203,6 +203,18 @@ export default function Home() {
                         </div>
                       ))}
                     </div>
+
+                    {/* Reference Image Section */}
+                    <div className="w-full pb-8">
+                      <div className="relative w-full rounded-xl overflow-hidden border-2 border-dashed border-orange-400/50 p-2 bg-orange-400/5">
+                        <p className="text-orange-300 text-xs text-center mb-2 font-mono uppercase tracking-widest">Reference Position</p>
+                        <img
+                          src="/16x9.jpg.jpeg"
+                          alt="Reference"
+                          className="w-full h-auto rounded-lg blur-md opacity-50 hover:blur-none hover:opacity-90 transition-all duration-700"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
