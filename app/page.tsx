@@ -211,7 +211,7 @@ export default function Home() {
                         <img
                           src="/16x9.jpg.jpeg"
                           alt="Reference"
-                          className="w-full h-auto rounded-lg blur-md opacity-50 hover:blur-none hover:opacity-90 transition-all duration-700"
+                          className="w-full h-auto rounded-lg blur-lg opacity-75"
                         />
                       </div>
                     </div>
